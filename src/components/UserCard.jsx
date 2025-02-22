@@ -20,7 +20,7 @@ const UserCard = ({ imageUrl, companyName, email, dateCreated, onEdit, onDelete 
             </div>
 
             {/* Middle section: Date Created */}
-            <div className="flex-shrink-0 w-48 text-center">
+            <div className="flex-shrink-0 w-48">
                 <p className="text-lg text-gray-500">
                     Created: {new Date(dateCreated).toLocaleDateString()}
                 </p>

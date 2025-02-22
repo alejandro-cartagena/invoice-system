@@ -1,9 +1,11 @@
 import { useState } from 'react';
 import { NavLink } from 'react-router-dom';
+import { useAuth } from '../hooks/useAuth';
 import voltLogo from "../images/Volt-Merchant-Solutions-Logo.png";
 
 export function Navbar() {
   const [isOpen, setIsOpen] = useState(false);
+  const { logout } = useAuth();
 
   return (
     <nav className="bg-[var(--color-primary)] shadow-md">
@@ -21,7 +23,7 @@ export function Navbar() {
           </div>
 
           {/* Desktop Navigation */}
-          <div className="hidden md:flex space-x-8">
+          <div className="hidden md:flex items-center space-x-8">
             <NavLink
               to="/admin"
               className={({ isActive }) =>
@@ -46,6 +48,12 @@ export function Navbar() {
             >
               View Users
             </NavLink>
+            <button
+              onClick={logout}
+              className="bg-red-700 hover:bg-red-800 cursor-pointer px-4 py-1 rounded-sm text-white transition-colors"
+            >
+              Logout
+            </button>
           </div>
 
           {/* Mobile menu button - Now vertically aligned */}
@@ -99,6 +107,15 @@ export function Navbar() {
             >
               View Users
             </NavLink>
+            <button
+              onClick={() => {
+                logout();
+                setIsOpen(false);
+              }}
+              className="bg-red-700 text-white hover:text-gray-400 block w-full text-left px-3 py-2 transition-colors"
+            >
+              Logout
+            </button>
           </div>
         </div>
       )}

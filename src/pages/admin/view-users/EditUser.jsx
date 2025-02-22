@@ -1,9 +1,10 @@
 import React, { useState, useEffect } from 'react';
 import { useSearchParams, useNavigate } from 'react-router-dom';
-import { Navbar } from '../../components/Navbar';
+import { Navbar } from '../../../components/Navbar';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { faArrowLeft } from '@fortawesome/free-solid-svg-icons';
-import users from "../../data/user-data.js";
+import users from "../../../data/user-data.js";
+import { RequireAdmin } from '../../../components/RequireAdmin';
 
 const EditUser = () => {
     const [searchParams] = useSearchParams();
@@ -475,4 +476,12 @@ const EditUser = () => {
     );
 };
 
-export default EditUser;
+// export default EditUser;
+
+export default function ProtectedEditUser() {
+    return (
+        <RequireAdmin>
+            <EditUser />
+        </RequireAdmin>
+    );
+}

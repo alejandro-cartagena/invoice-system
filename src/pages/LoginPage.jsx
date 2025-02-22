@@ -1,7 +1,12 @@
 import { useState, useEffect } from 'react';
-import axios from 'axios';
+import { useAuth } from '../hooks/useAuth.js';
+import { useNavigate, Navigate } from 'react-router-dom';
+import { PublicRoute } from '../components/PublicRoute';
 
 function LoginPage() {
+  const { login } = useAuth();
+  const navigate = useNavigate();
+  
   // Form state
   const [formData, setFormData] = useState({
     username: '',
@@ -63,38 +68,37 @@ function LoginPage() {
     
     if (!validateForm()) return;
 
-    setIsLoading(true); // Start loading
+    setIsLoading(true);
     
     try {
-      const response = await axios.post('https://voltms.com/wp-json/jwt-auth/v1/token', {
-        username: formData.username,
-        password: formData.password
-      });
-
-      if (response.data.token) {
-        // Save token to localStorage
-        localStorage.setItem('jwtToken', response.data.token);
-        
-        // If remember me is checked, save credentials
-        if (formData.rememberMe) {
-          localStorage.setItem('savedCredentials', JSON.stringify({
-            username: formData.username,
-            password: formData.password
-          }));
-        } else {
-          localStorage.removeItem('savedCredentials');
-        }
-
-        // Redirect or handle successful login
-        // window.location.href = '/dashboard';
+      const userData = await login(formData.username, formData.password);
+      console.log("Login response:", userData);
+      console.log("Is Super Admin:", userData.is_super_admin);
+      
+      // If remember me is checked, save credentials
+      if (formData.rememberMe) {
+        localStorage.setItem('savedCredentials', JSON.stringify({
+          username: formData.username,
+          password: formData.password
+        }));
+      } else {
+        localStorage.removeItem('savedCredentials');
       }
+
+      // Redirect based on user role
+      if (userData.is_super_admin) {
+        navigate('/admin');  // Redirect to admin dashboard
+      } else {
+        navigate('/dashboard');  // Redirect to regular user dashboard
+      }
+      
     } catch (error) {
       setErrors({
         ...errors,
-        general: error.response?.data?.message || 'An error occurred during login'
+        general: error.message || 'An error occurred during login'
       });
     } finally {
-      setIsLoading(false); // Stop loading regardless of outcome
+      setIsLoading(false);
     }
   };
 
@@ -106,6 +110,7 @@ function LoginPage() {
     }));
   };
 
+  // Only render the login page if we're not loading and there's no user
   return (
     <div className="flex flex-col justify-center items-center min-h-[100vh]">
       {/* Add your login form here */}
@@ -115,7 +120,7 @@ function LoginPage() {
                 <div>
                     <div className="flex justify-center align-middle w-[100%] max-w-[298px] mx-auto mb-12 pb-10 border-b border-b-[#9d9db2]">
                         <a href="" className="no-underline">
-                            <img src="https://cdn.iriscrm.com/volt/public/logos/www.voltmscrm.com_new_ui?v=20240618085742" alt="" srcset="" className="max-w-[179px] max-h-[109px]" />
+                            <img src="https://cdn.iriscrm.com/volt/public/logos/www.voltmscrm.com_new_ui?v=20240618085742" alt="" srcSet="" className="max-w-[179px] max-h-[109px]" />
                         </a>
                     </div>
                 </div>
@@ -221,4 +226,10 @@ function LoginPage() {
   )
 }
 
-export default LoginPage 
+export default function ProtectedLoginPage() {
+  return (
+    <PublicRoute>
+      <LoginPage />
+    </PublicRoute>
+  );
+} 

@@ -1,8 +1,9 @@
-import { Navbar } from "../components/Navbar"
-import Card from "../components/Card"
+import { Navbar } from "../../components/Navbar.jsx"
+import Card from "../../components/Card.jsx"
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { faUserPlus, faUsers } from '@fortawesome/free-solid-svg-icons';
 import { useNavigate } from 'react-router-dom';
+import { RequireAdmin } from '../../components/RequireAdmin.jsx';
 
 function AdminHomePage() {
     const navigate = useNavigate();
@@ -40,6 +41,12 @@ function AdminHomePage() {
         </div>
       </>
     )
-  }
-  
-  export default AdminHomePage
+}
+
+export default function ProtectedAdminHomePage() {
+  return (
+    <RequireAdmin>
+      <AdminHomePage />
+    </RequireAdmin>
+  );
+}

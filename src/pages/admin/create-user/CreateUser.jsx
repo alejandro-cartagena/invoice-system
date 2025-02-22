@@ -1,5 +1,6 @@
 import React, { useState } from 'react';
-import { Navbar } from '../../components/Navbar';
+import { Navbar } from '../../../components/Navbar';
+import { RequireAdmin } from '../../../components/RequireAdmin';
 
 const CreateUser = () => {
     // Form state
@@ -195,7 +196,6 @@ const CreateUser = () => {
         }
     };
 
-    console.log(formData);
 
     return (
         <div className="mb-10">
@@ -440,4 +440,12 @@ const CreateUser = () => {
     );
 }
 
-export default CreateUser;
+// export default CreateUser;
+
+export default function ProtectedCreateUser() {
+    return (
+        <RequireAdmin>
+            <CreateUser />
+        </RequireAdmin>
+    );
+}

@@ -1,12 +1,13 @@
 import React, { useState, useEffect } from 'react';
 import { useNavigate } from 'react-router-dom';
-import { Navbar } from '../../components/Navbar';
-import UserCard from '../../components/UserCard';
+import { Navbar } from '../../../components/Navbar.jsx';
+import UserCard from '../../../components/UserCard.jsx';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { faSearch, faChevronLeft, faChevronRight } from '@fortawesome/free-solid-svg-icons';
 import Swal from 'sweetalert2';
+import { RequireAdmin } from '../../../components/RequireAdmin.jsx';
 
-import users from "../../data/user-data.js";
+import users from "../../../data/user-data.js";
 
 const ViewUsers = () => {
     const navigate = useNavigate();
@@ -243,4 +244,12 @@ const ViewUsers = () => {
     );
 }
 
-export default ViewUsers;
+// export default ViewUsers;
+
+export default function ProtectedViewUsers() {
+    return (
+        <RequireAdmin>
+            <ViewUsers />
+        </RequireAdmin>
+    );
+}
